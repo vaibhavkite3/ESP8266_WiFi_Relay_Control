@@ -32,12 +32,16 @@ WiFiServer server(80);
 
 /* initialiation of varialbles and constants */
 
-//Pin Layout define 2 - Channel 2 - Pin
+//Pin Layout define 4 - Channel 4 - Pin
 #define B1 5   //PIN LAYOUT DEFINE D1 to GPIO-5
 #define B2 4   //PIN LAYOUT DEFINE D2 to GPIO-4
+#define B3 0   //PIN LAYOUT DEFINE D3 to GPIO-0
+#define B4 2   //PIN LAYOUT DEFINE D4 to GPIO-2
 
 String B1_STATE = "OFF";
 String B2_STATE = "OFF";
+String B3_STATE = "OFF";
+String B4_STATE = "OFF";
 
 /* ***************SETUP************** */
 void setup()
@@ -49,10 +53,14 @@ void setup()
   /* setting PIN mode */
   pinMode(B1, OUTPUT);
   pinMode(B2, OUTPUT);
+  pinMode(B3, OUTPUT);
+  pinMode(B4, OUTPUT);
 
   /* initializing and assigning pins values */
   digitalWrite(B1, LOW);
   digitalWrite(B2, LOW);
+  digitalWrite(B3, LOW);
+  digitalWrite(B4, LOW);
 
   /* Configure SSID */
   Serial.print("Configuring access point...");
@@ -112,6 +120,22 @@ void loop()
     Serial.println("BUTTON B2 OFF");
     B2_STATE = "OFF";
     digitalWrite(B2, LOW);
+  }else if (request.indexOf("GET /B3/ON") >= 0) {
+    Serial.println("BUTTON B3 ON");
+    B3_STATE = "ON";
+    digitalWrite(B3, HIGH);
+  } else if (request.indexOf("GET /B3/OFF") >= 0) {
+    Serial.println("BUTTON B3 OFF");
+    B3_STATE = "OFF";
+    digitalWrite(B3, LOW);
+  }else if (request.indexOf("GET /B4/ON") >= 0) {
+    Serial.println("BUTTON B4 ON");
+    B4_STATE = "ON";
+    digitalWrite(B4, HIGH);
+  } else if (request.indexOf("GET /B4/OFF") >= 0) {
+    Serial.println("BUTTON B4 OFF");
+    B4_STATE = "OFF";
+    digitalWrite(B4, LOW);
   }
 
   /*------------------HTML Page Creation---------------------*/
@@ -121,30 +145,69 @@ void loop()
   client.println("<link rel=\"icon\" href=\"data:,\">");
   // CSS
   client.println("<style>html { font-family: Helvetica; display: inline-block; margin: 0px auto; text-align: center;}");
-  client.println(".button { background-color: #195B6A; border: none; color: white; padding: 16px 40px;");
+  client.println(".dot {height: 30px; width: 30px; background-color: #00ff00; border-radius: 100%; display: inline-block;}");
+  client.println(".dot_off {background-color: #ff0000;}");
+  client.println(".button { background-color: #18c8f1; border: none; color: white; padding: 15px 90px; border-radius: 40px;");
   client.println("text-decoration: none; font-size: 30px; margin: 2px; cursor: pointer;}");
-  client.println(".button_off {background-color: #77878A;}</style></head>");
+  client.println(".button_off {background-color: #404040;}</style></head>");
 
   // Web Page Heading
   client.println("<body><h1>Control Panel</h1>");
 
-  // Display current state, and ON/OFF buttons for Button B1
-  client.println("<p>BUTTON B1 - State " + B1_STATE + "</p>");
+  // Display current state Indicator, and ON/OFF buttons for Button B1
+  if (B1_STATE == "OFF") {
+    client.println("<h3>BUTTON B1 &nbsp;&nbsp;&nbsp; <span class=\"dot dot_off\"></span></h3>");
+  } else {
+    client.println("<h3>BUTTON B1 &nbsp;&nbsp;&nbsp; <span class=\"dot\"></span></h3>");
+  }  
   // If the B1_STATE is OFF, it displays the ON button
   if (B1_STATE == "OFF") {
-    client.println("<p><a href=\"/B1/ON\"><button class=\"button\">ON</button></a></p>");
+    client.println("<p><a href=\"/B1/ON\"><button class=\"button button_off\">OFF</button></a></p>");
   } else {
-    client.println("<p><a href=\"/B1/OFF\"><button class=\"button button_off\">OFF</button></a></p>");
+    client.println("<p><a href=\"/B1/OFF\"><button class=\"button\">ON</button></a></p>");
   }
 
-  // Display current state, and ON/OFF buttons for Button B2
-  client.println("<p>BUTTON B2 - State " + B2_STATE + "</p>");
+  // Display current state Indicator, and ON/OFF buttons for Button B2
+  if (B2_STATE == "OFF") {
+    client.println("<h3>BUTTON B2 &nbsp;&nbsp;&nbsp; <span class=\"dot dot_off\"></span></h3>");
+  } else {
+    client.println("<h3>BUTTON B2 &nbsp;&nbsp;&nbsp; <span class=\"dot\"></span></h3>");
+  }  
   // If the B2_STATE is OFF, it displays the ON button
   if (B2_STATE == "OFF") {
-    client.println("<p><a href=\"/B2/ON\"><button class=\"button\">ON</button></a></p>");
+    client.println("<p><a href=\"/B2/ON\"><button class=\"button button_off\">OFF</button></a></p>");
   } else {
-    client.println("<p><a href=\"/B2/OFF\"><button class=\"button button_off\">OFF</button></a></p>");
+    client.println("<p><a href=\"/B2/OFF\"><button class=\"button\">ON</button></a></p>");
   }
+
+  // Display current state Indicator, and ON/OFF buttons for Button B3
+  if (B3_STATE == "OFF") {
+    client.println("<h3>BUTTON B3 &nbsp;&nbsp;&nbsp; <span class=\"dot dot_off\"></span></h3>");
+  } else {
+    client.println("<h3>BUTTON B3 &nbsp;&nbsp;&nbsp; <span class=\"dot\"></span></h3>");
+  }  
+  // If the B3_STATE is OFF, it displays the ON button
+  if (B3_STATE == "OFF") {
+    client.println("<p><a href=\"/B3/ON\"><button class=\"button button_off\">OFF</button></a></p>");
+  } else {
+    client.println("<p><a href=\"/B3/OFF\"><button class=\"button\">ON</button></a></p>");
+  }
+
+  // Display current state Indicator, and ON/OFF buttons for Button B4
+  if (B4_STATE == "OFF") {
+    client.println("<h3>BUTTON B4 &nbsp;&nbsp;&nbsp; <span class=\"dot dot_off\"></span></h3>");
+  } else {
+    client.println("<h3>BUTTON B4 &nbsp;&nbsp;&nbsp; <span class=\"dot\"></span></h3>");
+  }  
+  // If the B4_STATE is OFF, it displays the ON button
+  if (B4_STATE == "OFF") {
+    client.println("<p><a href=\"/B4/ON\"><button class=\"button button_off\">OFF</button></a></p>");
+  } else {
+    client.println("<p><a href=\"/B4/OFF\"><button class=\"button\">ON</button></a></p>");
+  }
+
+
+
   client.println("</body></html>");
 
   delay(1);
