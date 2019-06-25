@@ -145,7 +145,7 @@ void loop()
     client.println(".button_off {background-color: #404040;}</style></head>");
 
     // Web Page Heading
-    client.println("<body><h1>Control Panel</h1><br />");
+    client.println("<body><h1>Control Panel</h1>");
 
     // Display current state Indicator, and ON/OFF buttons for Button B1
     if (B1_STATE == "OFF") {
